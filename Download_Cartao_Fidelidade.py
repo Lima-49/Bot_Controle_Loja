@@ -115,3 +115,5 @@ except:
         clicking(element='Selecionando Listar Cartão Fidelidade', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/ul/li[7]/ul/li[4]/a/span[2]').click()
 
 df_fidelidade = pd.read_html(driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div[3]/form/div[2]/div[2]/table").get_attribute('outerHTML'))[0]
+# df_fidelidade.drop()
+df_fidelidade.to_excel(r'C:\Users\Vitor Augusto\Documents\Programas\Bot_Controle_Loja\Cartao_Fidelidade.xlsx', index=False)
