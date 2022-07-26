@@ -1,0 +1,10 @@
+[7776:9852:0725/223018.206:ERROR:device_event_log_impl.cc(214)] [22:30:18.206] USB: usb_device_handle_win.cc:1048 Failed to read descriptor from node connection: Um dispositivo conectado ao sistema não está funcionando. (0x1F)
+[7776:9852:0725/223018.209:ERROR:device_event_log_impl.cc(214)] [22:30:18.209] USB: usb_device_handle_win.cc:1048 Failed to read descriptor from node connection: Um dispositivo conectado ao sistema não está funcionando. (0x1F)
+[7776:9852:0725/223018.319:WARNING:pref_value_store.cc(284)] Expected type for download.default_directory is string but got null in store 5
+[7776:9852:0725/223028.676:INFO:CONSOLE(1)] "Uncaught (in promise) TypeError: Failed to execute 'put' on 'Cache': Partial response (status code 206) is unsupported", source: https://web.whatsapp.com/serviceworker.js (1)
+[7776:9852:0725/223029.369:INFO:CONSOLE(1)] "Uncaught (in promise) TypeError: Failed to execute 'put' on 'Cache': Partial response (status code 206) is unsupported", source: https://web.whatsapp.com/serviceworker.js (1)
+[7776:9852:0725/223029.372:INFO:CONSOLE(1)] "Uncaught (in promise) TypeError: Failed to execute 'put' on 'Cache': Partial response (status code 206) is unsupported", source: https://web.whatsapp.com/serviceworker.js (1)
+[7776:9852:0725/223031.465:INFO:CONSOLE(1)] "Another connection wants to delete database 'wawc_db_enc'. Closing db now to resume the delete request.", source: https://web.whatsapp.com/index.259d158aa95ac5107c01.worker.js (1)
+[7776:9852:0725/223031.466:INFO:CONSOLE(7)] "Another connection wants to delete database 'wawc_db_enc'. Closing db now to resume the delete request.", source: https://web.whatsapp.com/vendor1~bootstrap_qr.5922e52928d864c0918c.js (7)
+[7776:9852:0725/223031.829:INFO:CONSOLE(7)] "Another connection wants to delete database 'wawc'. Closing db now to resume the delete request.", source: https://web.whatsapp.com/vendor1~bootstrap_qr.5922e52928d864c0918c.js (7)
+[7776:9852:0725/223101.429:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
