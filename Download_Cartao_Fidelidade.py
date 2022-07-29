@@ -55,10 +55,12 @@ def create_driver(download_dir=None, headless=False):
     if download_dir is not None:
         download_dir=str(download_dir)
 
-
     preferences = {"download.default_directory": download_dir,
                    "directory_upgrade": True,
                    "safebrowsing.enabled": True}
+                   
+    #chrome_options.add_argument("user-data-dir=C:\\Users\\vitor\\AppData\\Local\\Google\\Chrome\\User Data")
+    chrome_options.add_argument(f"user-data-dir={os.path.join(os.getcwd(), 'profile', 'wpp')}")
     chrome_options.add_experimental_option("prefs", preferences)
     chromedriver_autoinstaller.install()
     driver = webdriver.Chrome(options=chrome_options)
@@ -70,8 +72,7 @@ def error(e):
     print("Apresentou erro, gravando o erro")
     exc_type, exc_obj, exc_tb = sys.exc_info()
     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-    path_erro = r'\\branas06av3-nrd\LAR_BRA_DIGITAL_F\Facens\Logs'
-    #path_erro = r"C:\Users\IWX1057086\Documents\Programas\TIM RPA\log"
+    path_erro = os.path.join(os.getcwd(), 'profile', 'log')
     today = date.today()
     name = str(fname) + '_' + str(today) + '.txt'
     arquivo = open(path_erro + '\\' + name, 'w')
@@ -80,7 +81,7 @@ def error(e):
     arquivo.write(str(exc_type) + "\n")
     arquivo.write(str(exc_tb.tb_lineno) + "\n")
     arquivo.close()
-    
+   
 ## Main ##
 driver = create_driver()
 
