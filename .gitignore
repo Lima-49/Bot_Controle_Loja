@@ -1,5 +1,8 @@
+*.xlsx
 venv
 session.wa
 chrome-data
 profile
 app.js
+Download
+.vscode

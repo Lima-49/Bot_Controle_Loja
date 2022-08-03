@@ -12,6 +12,7 @@ import os
 import sys
 from datetime import date, datetime
 import chromedriver_autoinstaller
+import time
 
 ## Funtions ##
 def clicking(path, element='elemento selecionado', refresh=False, by=By.XPATH, limit=3):
@@ -82,12 +83,31 @@ def error(e):
     arquivo.write(str(exc_tb.tb_lineno) + "\n")
     arquivo.close()
    
+def create_dir(path):
+    
+    if not os.path.isdir(path):
+        
+        #Se o diretorio não exisit cria
+        os.mkdir(path)
+    else:
+
+        #Se não limpa todos os arquivos do diretorio
+        for file in os.listdir(path):
+            os.remove(path + "\\" + file)
+    
+    #retorna o diretorio 
+    return path
+
 ## Main ##
 driver = create_driver()
 
 #Login
 usr = 'Alineliel'
 psw = 'Vitor*06'
+
+#Criando o diretorio auxiliar
+path = create_dir(os.path.join(os.getcwd(), 'Download'))
+path_download = os.path.join(path, "Lista Cartão Fidelidade.xlsx")
 
 driver.get('https://phibo.space')
 
@@ -100,21 +120,30 @@ try:
 except:
     pass
 
-try:
-    clicking(element='Clicando em vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/a/span[2]').click()
-    clicking(element='Selecionado Consulta Vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/ul/li[7]/a').click()
-    clicking(element='Selecionando Listar Cartão Fidelidade', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/ul/li[7]/ul/li[4]/a/span[2]').click()
-except:
-    
-    try:
-        clicking(element='Clicando em vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/a/span[2]').click()
-        clicking(element='Selecionado Consulta Vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/ul/li[7]/a').click()
-        clicking(element='Selecionando Listar Cartão Fidelidade', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/ul/li[7]/ul/li[4]/a/span[2]').click()
-    except:
-        clicking(element='Clicando em vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/a/span[2]').click()
-        clicking(element='Selecionado Consulta Vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/ul/li[7]/a').click()
-        clicking(element='Selecionando Listar Cartão Fidelidade', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/ul/li[7]/ul/li[4]/a/span[2]').click()
+#Clicando na opção de vendas no header
+clicking(element='Clicando em vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/a/span[2]').click()
+clicking(element='Clicando em vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/a/span[2]').click()
+clicking(element='Clicando em vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/a/span[2]').click()
+clicking(element='Clicando em vendas', path='/html/body/div[1]/div[2]/div[1]/div[2]/form/table/tbody/tr/td[1]/div/ul/li[3]/a/span[2]').click()
 
+#Selecionando a listagem de cartão fidelidade dentro da aba consulta de vendas
+clicking(element='Selecionado Consulta Vendas', path="//span[text()='Consulta Vendas']").click()                                                                    
+clicking(element='Selecionando Listar Cartão Fidelidade', path="//span[text()='Listar Cartão Fidelidade']").click()
+time.sleep(10)
+
+#Aplicando o filtro de quantidade de 10 - 100
+clicking(element='Limpando o campo de Quantidade', path='/html/body/div[1]/div[2]/div[3]/form/table/tbody/tr/td[2]/div/span[1]/input[1]').clear()
+clicking(element='Limpando o campo de Quantidade', path='/html/body/div[1]/div[2]/div[3]/form/table/tbody/tr/td[2]/div/span[1]/input[1]').send_keys('10,00')
+clicking(element='Clicando o campo de confirmar', path='/html/body/div[1]/div[2]/div[3]/form/table/tbody/tr/td[3]/a').click()
+
+#Selecionando a tabela de Cartão fidelidade                 
 df_fidelidade = pd.read_html(driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div[3]/form/div[2]/div[2]/table").get_attribute('outerHTML'))[0]
-# df_fidelidade.drop()
-df_fidelidade.to_excel(r'C:\Users\Vitor Augusto\Documents\Programas\Bot_Controle_Loja\Cartao_Fidelidade.xlsx', index=False)
+
+#Apagando uma coluna indesjeda
+df_fidelidade = df_fidelidade.drop(columns=['Unnamed: 0'])
+
+#Salvando no diretorio auxuliar criado
+df_fidelidade.to_excel(path_download, index=False)
+
+#Fechando o chrome
+driver.quit()
