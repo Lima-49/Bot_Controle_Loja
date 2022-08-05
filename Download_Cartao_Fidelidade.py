@@ -113,10 +113,12 @@ def decodeLogin(path):
 
     #Pegando os dados do arquivo
     usr = arq.get('LOGIN', 'usr')
-    usr = usr.decode('ascii')
+    usr = base64.b64decode(usr)
+
     psw = arq.get('LOGIN', 'psw')
+    psw = base64.b64decode(psw)
     
-    return usr, psw
+    return str(usr, 'utf-8'), str(psw, 'utf-8')
 
 ## Main ##
 #Login
@@ -155,6 +157,7 @@ time.sleep(10)
 clicking(element='Limpando o campo de Quantidade', path='/html/body/div[1]/div[2]/div[3]/form/table/tbody/tr/td[2]/div/span[1]/input[1]').clear()
 clicking(element='Limpando o campo de Quantidade', path='/html/body/div[1]/div[2]/div[3]/form/table/tbody/tr/td[2]/div/span[1]/input[1]').send_keys('10,00')
 clicking(element='Clicando o campo de confirmar', path='/html/body/div[1]/div[2]/div[3]/form/table/tbody/tr/td[3]/a').click()
+time.sleep(10)
 
 #Selecionando a tabela de Cartão fidelidade                 
 df_fidelidade = pd.read_html(driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div[3]/form/div[2]/div[2]/table").get_attribute('outerHTML'))[0]
