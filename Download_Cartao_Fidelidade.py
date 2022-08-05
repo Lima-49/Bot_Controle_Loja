@@ -13,6 +13,13 @@ import sys
 from datetime import date, datetime
 import chromedriver_autoinstaller
 import time
+import base64
+import configparser
+from pathlib import Path
+
+## Paths ##
+output_path = Path(__file__).parent
+asseths_path = output_path / Path("./config.txt")
 
 ## Funtions ##
 def clicking(path, element='elemento selecionado', refresh=False, by=By.XPATH, limit=3):
@@ -57,9 +64,9 @@ def create_driver(download_dir=None, headless=False):
         download_dir=str(download_dir)
 
     preferences = {"download.default_directory": download_dir,
-                   "directory_upgrade": True,
-                   "safebrowsing.enabled": True}
-                   
+                "directory_upgrade": True,
+                "safebrowsing.enabled": True}
+                
     #chrome_options.add_argument("user-data-dir=C:\\Users\\vitor\\AppData\\Local\\Google\\Chrome\\User Data")
     chrome_options.add_argument(f"user-data-dir={os.path.join(os.getcwd(), 'profile', 'wpp')}")
     chrome_options.add_experimental_option("prefs", preferences)
@@ -82,7 +89,7 @@ def error(e):
     arquivo.write(str(exc_type) + "\n")
     arquivo.write(str(exc_tb.tb_lineno) + "\n")
     arquivo.close()
-   
+
 def create_dir(path):
     
     if not os.path.isdir(path):
@@ -98,21 +105,34 @@ def create_dir(path):
     #retorna o diretorio 
     return path
 
-## Main ##
-driver = create_driver()
+def decodeLogin(path):
+    
+    #Abrindo o arquivo de configurações
+    arq = configparser.RawConfigParser()
+    arq.read(path)
 
+    #Pegando os dados do arquivo
+    usr = arq.get('LOGIN', 'usr')
+    usr = usr.decode('ascii')
+    psw = arq.get('LOGIN', 'psw')
+    
+    return usr, psw
+
+## Main ##
 #Login
-usr = 'Alineliel'
-psw = 'Vitor*06'
+usr,psw = decodeLogin(asseths_path)
 
 #Criando o diretorio auxiliar
 path = create_dir(os.path.join(os.getcwd(), 'Download'))
 path_download = os.path.join(path, "Lista Cartão Fidelidade.xlsx")
 
+#Acessando o portal
+driver = create_driver()
 driver.get('https://phibo.space')
 
-clicking(element='Passando o usuario', path="/html/body/div[1]/form/div/div/input[1]").send_keys(usr)
-clicking(element="Passando a senha", path='/html/body/div[1]/form/div/div/input[2]').send_keys(psw)
+#Passando o usuario
+clicking(element='Passando o usuario', path="/html/body/div[1]/form/div/div/input[1]").send_keys(str(usr))
+clicking(element="Passando a senha", path='/html/body/div[1]/form/div/div/input[2]').send_keys(str(psw))
 clicking(element='Clicando em acessar', path='/html/body/div[1]/form/div/div/button').click()
 
 try:

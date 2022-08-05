@@ -1,0 +1,3 @@
+[LOGIN]
+usr = QWxpbmVsaWVs
+psw = Vml0b3IqMDY=
