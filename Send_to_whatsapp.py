@@ -1,3 +1,4 @@
+from genericpath import isdir
 from selenium import webdriver
 from selenium.webdriver.common import actions
 from selenium.webdriver.common.by import By
@@ -13,7 +14,18 @@ import sys
 from datetime import date, datetime
 import chromedriver_autoinstaller
 import time
+import base64
+import configparser
+from pathlib import Path
 
+## Paths ##
+session_path = os.path.join(os.path.expanduser('~'), 'wpp_session')
+path = os.path.join(os.getcwd(), 'Download')
+path_download = os.path.join(path, "Lista Cartão Fidelidade.xlsx")
+output_path = Path(__file__).parent
+asseths_path = output_path / Path("./config.txt")
+
+## Functions ##
 def clicking(path, element='elemento selecionado', refresh=False, by=By.XPATH, limit=3):
     """
     * path: caminho do elemento que será encontrado na página. Pode ser um xpath, um ID, um name e etc;
@@ -60,7 +72,7 @@ def create_driver(download_dir=None, headless=False):
                    "safebrowsing.enabled": True}
                    
     #chrome_options.add_argument("user-data-dir=C:\\Users\\vitor\\AppData\\Local\\Google\\Chrome\\User Data")
-    chrome_options.add_argument(f"user-data-dir={os.path.join(os.getcwd(), 'profile', 'wpp')}")
+    chrome_options.add_argument(f"user-data-dir={session_path}")
     chrome_options.add_experimental_option("prefs", preferences)
     chromedriver_autoinstaller.install()
     driver = webdriver.Chrome(options=chrome_options)
@@ -83,11 +95,39 @@ def error(e):
     arquivo.write(str(exc_tb.tb_lineno) + "\n")
     arquivo.close()
    
+def decodeLogin(path):
+    
+    #Abrindo o arquivo de configurações
+    arq = configparser.RawConfigParser()
+    arq.read(path)
+
+    #Pegando os dados do arquivo
+    num = arq.get('RECEIVER', 'number')
+    num = base64.b64decode(num)
+    
+    return str(num, 'utf-8')
+
+#Acces the whatsapp page
 driver = create_driver(download_dir=None, headless=False)
 driver.get('http://web.whatsapp.com/')
 
-#Tempo de espera para ler o qr code
-while len(driver.find_element(By.ID, "side").text) < 1:
-    time.sleep(1)
+#If session folder doesn't exist, 
+if not os.path.exists(session_path):
+    
+    #Wait the user read the QR code
+    while len(driver.find_element(By.ID, 'side').text) < 1:
+        time.sleep(1)
 
+#Decode the receiver number 
+receiver_number = decodeLogin(asseths_path)
 
+#Go directly to the receiver chat
+driver.get(f'http://web.whatsapp.com/send?phone={receiver_number}')
+
+#Send the downloaded file to te right receiver
+clicking(element='Click at the attached button', path="//div[@title='Anexar']").click()
+clicking(element='Send the downloaded file', path="//input[@type='file']").send_keys(path_download)
+clicking(element='Click at send file', path="//div[@aria-label='Enviar']").click()
+
+print("File sended with success")
+driver.quit()

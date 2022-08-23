@@ -1,3 +1,6 @@
 [LOGIN]
 usr = QWxpbmVsaWVs
 psw = Vml0b3IqMDY=
+
+[RECEIVER]
+number = KzU1IDExIDk5Njg4MzI5NA==
